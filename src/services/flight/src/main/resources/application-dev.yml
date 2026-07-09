@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: flight
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    clean-disabled: false
+
+logging:
+  name: flight-logger
+  level:
+    root: INFO
+
+server:
+  port: 8082
+
+grpc:
+  server:
+    port: 9092

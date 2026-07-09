@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: booking
+
+  main:
+    allow-circular-references: false
+
+  mvc:
+    problemdetails:
+      enabled: true
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/booking_read
+      database: booking_read
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    template:
+      exchange: booking
+      exchange-type: fanout
+
+  otel:
+    collector:
+      service-name: booking
+      service-version: 1.0.0
+      endpoint: http://localhost:4317
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/keycloak-realm/protocol/openid-connect/certs

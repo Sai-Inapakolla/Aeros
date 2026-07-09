@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: passenger
+
+  main:
+    allow-circular-references: false
+
+  mvc:
+    problemdetails:
+      enabled: true
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/passenger_read
+      database: passenger_read
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    template:
+      exchange: passenger
+      exchange-type: fanout
+
+  otel:
+    collector:
+      service-name: passenger
+      service-version: 1.0.0
+      endpoint: http://localhost:4317
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/keycloak-realm/protocol/openid-connect/certs
