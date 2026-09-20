@@ -43,7 +43,10 @@ target/
 node_modules/
 **/node_modules/
 
-# OS-specific files
-.DS_Store
-Thumbs.db
+# Angular / Frontend build
+.angular/
+**/.angular/
+dist/
+**/dist/
+
 

@@ -1,0 +1,879 @@
+<div class="app-wrapper">
+  
+  <!-- ================= TOPBAR NAVIGATION ================= -->
+  <header class="app-header">
+    <div class="header-inner">
+      <!-- Brand Logo -->
+      <a href="javascript:void(0)" class="brand" (click)="api.setTab('flights')">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">AEROS</span>
+          <span class="brand-sub">Aviation Microservices</span>
+        </div>
+      </a>
+
+      <!-- Primary Navigation Tabs -->
+      <nav class="nav-links">
+        <button 
+          class="nav-item" 
+          [class.active]="api.activeTab() === 'flights'" 
+          (click)="api.setTab('flights')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+          </svg>
+          Flights
+        </button>
+
+        <button 
+          class="nav-item" 
+          [class.active]="api.activeTab() === 'seats'" 
+          (click)="api.setTab('seats')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0z"/><path d="M5 18v2"/><path d="M19 18v2"/>
+          </svg>
+          Cabin & Seats
+        </button>
+
+        <button 
+          class="nav-item" 
+          [class.active]="api.activeTab() === 'passengers'" 
+          (click)="api.setTab('passengers')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Passengers
+        </button>
+
+        <button 
+          class="nav-item" 
+          [class.active]="api.activeTab() === 'bookings'" 
+          (click)="api.setTab('bookings')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/>
+          </svg>
+          Boarding Passes
+          <span class="count-badge" *ngIf="api.bookings().length">{{ api.bookings().length }}</span>
+        </button>
+
+        <button 
+          class="nav-item" 
+          [class.active]="api.activeTab() === 'admin'" 
+          (click)="api.setTab('admin')">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+          Fleet & Ops
+        </button>
+      </nav>
+
+      <!-- Actions & Status -->
+      <div class="header-right">
+        <!-- Live Gateway Status Indicator -->
+        <div class="status-indicator" [class.online]="api.isHealthy()" [class.offline]="!api.isHealthy()" [title]="api.isHealthy() ? 'Microservices Connected' : 'Local Mock Simulation Mode Active'">
+          <span class="status-dot"></span>
+          <span class="status-text">{{ api.isHealthy() ? 'Services Online' : 'Simulation Mode' }}</span>
+        </div>
+
+        <!-- Mode Switcher -->
+        <button class="btn btn-outline btn-sm" (click)="api.toggleLiveMode()" [title]="api.config().isLiveMode ? 'Switch to Mock Storage' : 'Connect to Live Gateway'">
+          {{ api.config().isLiveMode ? 'Live Gateway' : 'Mock Mode' }}
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="theme-btn" (click)="api.toggleTheme()" title="Toggle Dark/Light Mode">
+          <svg *ngIf="api.config().theme === 'dark'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg *ngIf="api.config().theme === 'light'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="main-body">
+
+    <!-- TAB 1: FLIGHT SEARCH & SELECTION -->
+    <section *ngIf="api.activeTab() === 'flights'" class="tab-content animate-fade-in">
+      <!-- Hero Flight Search Section -->
+      <div class="hero-search-card">
+        <div class="hero-top">
+          <span class="badge badge-blue">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z"/></svg>
+            Next-Gen Aviation Engine
+          </span>
+          <h1 class="hero-title">Book Flights with Speed and Precision</h1>
+          <p class="hero-desc">Orchestrated by Spring Boot Microservices, CQRS, and Event-Driven Architecture.</p>
+        </div>
+
+        <!-- Filter Form -->
+        <div class="search-form-grid">
+          <div class="form-group">
+            <label class="form-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6Z"/></svg>
+              Origin (From)
+            </label>
+            <select class="form-select" [ngModel]="searchOrigin()" (ngModelChange)="searchOrigin.set($event)">
+              <option value="">All Departure Airports</option>
+              <option *ngFor="let apt of api.airports()" [value]="apt.id">{{ apt.city }} ({{ apt.code }}) - {{ apt.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              Destination (To)
+            </label>
+            <select class="form-select" [ngModel]="searchDestination()" (ngModelChange)="searchDestination.set($event)">
+              <option value="">All Arrival Destinations</option>
+              <option *ngFor="let apt of api.airports()" [value]="apt.id">{{ apt.city }} ({{ apt.code }}) - {{ apt.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Date
+            </label>
+            <input type="date" class="form-input" [ngModel]="searchDate()" (ngModelChange)="searchDate.set($event)">
+          </div>
+
+          <div class="form-group action-group">
+            <button class="btn btn-primary btn-block" (click)="api.setTab('flights')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Filter Flights
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Destination Badges -->
+        <div class="quick-destinations">
+          <span class="quick-label">Popular Hubs:</span>
+          <button class="quick-pill" (click)="searchDestination.set('3c5c0000-97c6-fc34-fc3c-08db322230ca')">JFK New York</button>
+          <button class="quick-pill" (click)="searchDestination.set('3c5c0000-97c6-fc34-fc3c-08db322230c9')">LHR London</button>
+          <button class="quick-pill" (click)="searchDestination.set('3c5c0000-97c6-fc34-fc3c-08db322230cb')">DXB Dubai</button>
+          <button class="quick-pill" (click)="searchDestination.set('3c5c0000-97c6-fc34-fc3c-08db322230cc')">HND Tokyo</button>
+          <button class="quick-pill" (click)="searchOrigin.set(''); searchDestination.set('')">Reset Filters</button>
+        </div>
+      </div>
+
+      <!-- Available Flights Section -->
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Available Flights</h2>
+          <p class="section-sub">Real-time scheduling from Flight Service (Port 8082)</p>
+        </div>
+        <span class="badge badge-amber">{{ filteredFlights().length }} Flights Available</span>
+      </div>
+
+      <div class="flight-cards-grid">
+        <div *ngFor="let flight of filteredFlights()" class="glass-card flight-card" [class.selected]="api.selectedFlight()?.id === flight.id">
+          
+          <div class="flight-card-top">
+            <div class="airline-meta">
+              <span class="flight-badge">{{ flight.flightNumber }}</span>
+              <span class="aircraft-tag">{{ flight.aircraftName }}</span>
+            </div>
+            <span class="badge" [class.badge-green]="flight.status === 'On Time'" [class.badge-amber]="flight.status === 'Boarding'" [class.badge-blue]="flight.status === 'Scheduled'">
+              {{ flight.status }}
+            </span>
+          </div>
+
+          <!-- Route Info -->
+          <div class="flight-route-display">
+            <div class="route-point">
+              <span class="airport-code">{{ flight.departureAirportCode }}</span>
+              <span class="city-name">{{ flight.departureCity }}</span>
+              <span class="time-stamp">{{ flight.departureDate | date:'shortTime' }}</span>
+            </div>
+
+            <div class="flight-timeline">
+              <span class="duration-label">{{ flight.durationMinutes }}m Direct</span>
+              <div class="timeline-graphic">
+                <div class="line-dot"></div>
+                <div class="line-track"></div>
+                <svg class="plane-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                </svg>
+                <div class="line-dot"></div>
+              </div>
+              <span class="date-label">{{ flight.flightDate }}</span>
+            </div>
+
+            <div class="route-point text-right">
+              <span class="airport-code">{{ flight.arriveAirportCode }}</span>
+              <span class="city-name">{{ flight.arriveCity }}</span>
+              <span class="time-stamp">{{ flight.arriveDate | date:'shortTime' }}</span>
+            </div>
+          </div>
+
+          <!-- Footer Price & CTA -->
+          <div class="flight-card-footer">
+            <div class="price-box">
+              <span class="price-from">Starts from</span>
+              <div class="price-val">
+                <span class="currency">$</span>
+                <span class="amount">{{ flight.price }}</span>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" (click)="selectAndNavigateToSeats(flight)">
+              <span>Select & Pick Seat</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: CABIN & SEAT SELECTION -->
+    <section *ngIf="api.activeTab() === 'seats'" class="tab-content animate-fade-in">
+      
+      <!-- Selected Flight Banner -->
+      <div *ngIf="api.selectedFlight() as flight" class="glass-card flight-summary-banner">
+        <div class="banner-left">
+          <span class="badge badge-blue">{{ flight.flightNumber }}</span>
+          <h2 class="summary-route">{{ flight.departureCity }} ({{ flight.departureAirportCode }}) → {{ flight.arriveCity }} ({{ flight.arriveAirportCode }})</h2>
+          <span class="summary-meta">{{ flight.aircraftName }} • {{ flight.flightDate }} • Departs {{ flight.departureDate | date:'shortTime' }}</span>
+        </div>
+        <div class="banner-right">
+          <button class="btn btn-outline btn-sm" (click)="api.setTab('flights')">Change Flight</button>
+        </div>
+      </div>
+
+      <div class="seat-workspace-grid">
+        
+        <!-- Left: Airplane Cabin Map -->
+        <div class="glass-card cabin-container">
+          <div class="cabin-header">
+            <h3 class="cabin-title">Interactive Aircraft Cabin Map</h3>
+            <p class="cabin-sub">Click on an available seat to reserve it for your selected passenger</p>
+          </div>
+
+          <!-- Seat Legend -->
+          <div class="seat-legend">
+            <div class="legend-item">
+              <div class="seat-sample seat-available"></div>
+              <span>Available</span>
+            </div>
+            <div class="legend-item">
+              <div class="seat-sample seat-selected"></div>
+              <span>Selected</span>
+            </div>
+            <div class="legend-item">
+              <div class="seat-sample seat-occupied"></div>
+              <span>Occupied</span>
+            </div>
+            <div class="legend-item">
+              <span class="class-tag first">First</span>
+              <span class="class-tag business">Business</span>
+              <span class="class-tag economy">Economy</span>
+            </div>
+          </div>
+
+          <!-- Aircraft Fuselage Representation -->
+          <div class="fuselage-wrapper">
+            <div class="cockpit-nose">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2L6 14h12L12 2z"/>
+              </svg>
+              <span>Cockpit</span>
+            </div>
+
+            <!-- Cabin Grid -->
+            <div class="seats-grid-layout">
+              <div *ngFor="let rowGroup of getSeatRows(api.activeFlightSeats())" class="seat-row-block">
+                
+                <span class="row-number">{{ rowGroup.rowNumber }}</span>
+
+                <!-- Seats in Row -->
+                <div class="row-seats-container">
+                  <!-- Left Side Seats (A, B, C) -->
+                  <div class="seats-group">
+                    <ng-container *ngFor="let seat of rowGroup.seats">
+                      <button 
+                        *ngIf="seat.seatNumber.endsWith('A') || seat.seatNumber.endsWith('B') || seat.seatNumber.endsWith('C')"
+                        class="seat-btn"
+                        [class.first-class]="seat.seatClass === 'FIRST'"
+                        [class.business-class]="seat.seatClass === 'BUSINESS'"
+                        [class.economy-class]="seat.seatClass === 'ECONOMY'"
+                        [class.selected]="api.selectedSeat()?.id === seat.id"
+                        [class.occupied]="seat.isReserved"
+                        [disabled]="seat.isReserved"
+                        (click)="selectSeat(seat)"
+                        [title]="'Seat ' + seat.seatNumber + ' • ' + seat.seatClass + ' • $' + seat.price">
+                        <span class="seat-code">{{ seat.seatNumber }}</span>
+                      </button>
+                    </ng-container>
+                  </div>
+
+                  <!-- Aisle -->
+                  <div class="cabin-aisle">
+                    <span>AISLE</span>
+                  </div>
+
+                  <!-- Right Side Seats (D, E, F) -->
+                  <div class="seats-group">
+                    <ng-container *ngFor="let seat of rowGroup.seats">
+                      <button 
+                        *ngIf="seat.seatNumber.endsWith('D') || seat.seatNumber.endsWith('E') || seat.seatNumber.endsWith('F')"
+                        class="seat-btn"
+                        [class.first-class]="seat.seatClass === 'FIRST'"
+                        [class.business-class]="seat.seatClass === 'BUSINESS'"
+                        [class.economy-class]="seat.seatClass === 'ECONOMY'"
+                        [class.selected]="api.selectedSeat()?.id === seat.id"
+                        [class.occupied]="seat.isReserved"
+                        [disabled]="seat.isReserved"
+                        (click)="selectSeat(seat)"
+                        [title]="'Seat ' + seat.seatNumber + ' • ' + seat.seatClass + ' • $' + seat.price">
+                        <span class="seat-code">{{ seat.seatNumber }}</span>
+                      </button>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <span class="row-number">{{ rowGroup.rowNumber }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Reservation Summary & Passenger Selector -->
+        <div class="reservation-sidebar">
+          
+          <!-- Passenger Selection Card -->
+          <div class="glass-card sidebar-card">
+            <div class="sidebar-header">
+              <h3 class="sidebar-title">Passenger Details</h3>
+              <button class="btn btn-outline btn-xs" (click)="showPassengerModal.set(true)">+ Add New</button>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Select Booking Passenger</label>
+              <select class="form-select" [ngModel]="api.selectedPassenger()?.id" (ngModelChange)="api.selectPassenger(api.passengers().find(p => p.id === $event)!)">
+                <option *ngFor="let p of api.passengers()" [value]="p.id">{{ p.name }} ({{ p.passengerType }})</option>
+              </select>
+            </div>
+
+            <div *ngIf="api.selectedPassenger() as pass" class="passenger-preview-box">
+              <div class="pass-info-row">
+                <span class="pass-label">Full Name:</span>
+                <span class="pass-val">{{ pass.name }}</span>
+              </div>
+              <div class="pass-info-row">
+                <span class="pass-label">Passport:</span>
+                <span class="pass-val font-mono">{{ pass.passportNumber }}</span>
+              </div>
+              <div class="pass-info-row">
+                <span class="pass-label">Loyalty Tier:</span>
+                <span class="badge" [class.badge-amber]="pass.passengerType === 'VIP'" [class.badge-blue]="pass.passengerType !== 'VIP'">{{ pass.passengerType }}</span>
+              </div>
+              <div class="pass-info-row">
+                <span class="pass-label">Email:</span>
+                <span class="pass-val">{{ pass.email }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkout / Booking Confirmation Card -->
+          <div class="glass-card sidebar-card checkout-card">
+            <h3 class="sidebar-title">Reservation Summary</h3>
+
+            <div *ngIf="api.selectedSeat() as seat; else noSeatTemplate" class="checkout-details">
+              <div class="summary-line">
+                <span>Flight:</span>
+                <strong>{{ api.selectedFlight()?.flightNumber }}</strong>
+              </div>
+              <div class="summary-line">
+                <span>Seat Number:</span>
+                <strong class="seat-highlight">{{ seat.seatNumber }}</strong>
+              </div>
+              <div class="summary-line">
+                <span>Class:</span>
+                <span class="badge badge-blue">{{ seat.seatClass }}</span>
+              </div>
+              <div class="summary-line">
+                <span>Type:</span>
+                <span>{{ seat.seatType }}</span>
+              </div>
+
+              <div class="price-breakdown">
+                <div class="total-line">
+                  <span>Total Amount</span>
+                  <div class="total-amount">${{ seat.price }}</div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-block btn-lg" (click)="confirmBooking()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span>Confirm & Issue Boarding Pass</span>
+              </button>
+            </div>
+
+            <ng-template #noSeatTemplate>
+              <div class="empty-seat-hint">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0z"/>
+                </svg>
+                <p>Please select a seat from the cabin layout to proceed with your booking.</p>
+              </div>
+            </ng-template>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PASSENGER DIRECTORY -->
+    <section *ngIf="api.activeTab() === 'passengers'" class="tab-content animate-fade-in">
+      
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Passenger Directory</h2>
+          <p class="section-sub">Synchronized with Passenger Service (Port 8083)</p>
+        </div>
+        <button class="btn btn-primary" (click)="showPassengerModal.set(true)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Register Passenger
+        </button>
+      </div>
+
+      <div class="passenger-cards-grid">
+        <div *ngFor="let p of api.passengers()" class="glass-card passenger-card">
+          <div class="passenger-card-top">
+            <div class="pass-avatar">
+              {{ p.name.charAt(0) }}
+            </div>
+            <div class="pass-meta">
+              <h3 class="pass-name">{{ p.name }}</h3>
+              <span class="pass-email">{{ p.email }}</span>
+            </div>
+            <span class="badge" [class.badge-amber]="p.passengerType === 'VIP'" [class.badge-blue]="p.passengerType !== 'VIP'">{{ p.passengerType }}</span>
+          </div>
+
+          <div class="pass-details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Passport No.</span>
+              <span class="detail-value font-mono">{{ p.passportNumber }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Phone</span>
+              <span class="detail-value">{{ p.phoneNumber || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="passenger-card-actions">
+            <button class="btn btn-outline btn-sm btn-block" (click)="api.selectPassenger(p); api.setTab('flights')">
+              Select for Booking
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: BOARDING PASSES & BOOKINGS -->
+    <section *ngIf="api.activeTab() === 'bookings'" class="tab-content animate-fade-in">
+      
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Issued Boarding Passes</h2>
+          <p class="section-sub">CQRS Projections from Booking Service (Port 8084)</p>
+        </div>
+        <span class="badge badge-blue">{{ api.bookings().length }} Total Bookings</span>
+      </div>
+
+      <div *ngIf="api.bookings().length === 0" class="empty-state glass-card">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/>
+        </svg>
+        <h3>No Boarding Passes Issued Yet</h3>
+        <p>Search for a flight and reserve a seat to generate a live digital boarding pass.</p>
+        <button class="btn btn-primary" (click)="api.setTab('flights')">Book a Flight</button>
+      </div>
+
+      <div class="boarding-passes-list">
+        <div *ngFor="let b of api.bookings()" class="glass-card boarding-pass-ticket" [class.cancelled]="b.status === 'CANCELLED'">
+          
+          <!-- Left Ticket Stub -->
+          <div class="ticket-main">
+            <div class="ticket-header">
+              <div class="airline-brand">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                </svg>
+                <span>AEROS AIRWAYS</span>
+              </div>
+              <span class="badge" [class.badge-green]="b.status === 'CONFIRMED'" [class.badge-red]="b.status === 'CANCELLED'">
+                {{ b.status }}
+              </span>
+            </div>
+
+            <!-- Route Banner -->
+            <div class="ticket-route-grid">
+              <div class="route-box">
+                <span class="code">{{ b.departureAirportCode }}</span>
+                <span class="city">{{ b.departureCity }}</span>
+                <span class="time">{{ b.departureDate | date:'shortTime' }}</span>
+              </div>
+
+              <div class="flight-flight-indicator">
+                <span class="flight-no">{{ b.flightNumber }}</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                </svg>
+                <span class="date">{{ b.departureDate | date:'mediumDate' }}</span>
+              </div>
+
+              <div class="route-box text-right">
+                <span class="code">{{ b.arriveAirportCode }}</span>
+                <span class="city">{{ b.arriveCity }}</span>
+                <span class="time">{{ b.arriveDate | date:'shortTime' }}</span>
+              </div>
+            </div>
+
+            <!-- Passenger & Gate Matrix -->
+            <div class="ticket-matrix">
+              <div class="matrix-item">
+                <span class="label">PASSENGER</span>
+                <span class="val">{{ b.passengerName }}</span>
+              </div>
+              <div class="matrix-item">
+                <span class="label">SEAT</span>
+                <span class="val font-highlight">{{ b.seatNumber }}</span>
+              </div>
+              <div class="matrix-item">
+                <span class="label">CLASS</span>
+                <span class="val">{{ b.seatClass }}</span>
+              </div>
+              <div class="matrix-item">
+                <span class="label">GATE</span>
+                <span class="val">{{ b.gate }}</span>
+              </div>
+              <div class="matrix-item">
+                <span class="label">TERMINAL</span>
+                <span class="val">{{ b.terminal }}</span>
+              </div>
+            </div>
+
+            <!-- Realistic Barcode Simulation -->
+            <div class="ticket-barcode">
+              <div class="barcode-lines"></div>
+              <span class="barcode-token">{{ b.qrToken }}</span>
+            </div>
+          </div>
+
+          <!-- Tear-Off Stub (Right Side) -->
+          <div class="ticket-stub">
+            <div class="stub-header">
+              <span class="stub-tag">BOARDING PASS</span>
+              <span class="flight-tag">{{ b.flightNumber }}</span>
+            </div>
+
+            <div class="stub-content">
+              <div class="stub-row">
+                <span class="label">PASSENGER:</span>
+                <span class="val">{{ b.passengerName }}</span>
+              </div>
+              <div class="stub-row">
+                <span class="label">ROUTE:</span>
+                <span class="val">{{ b.departureAirportCode }} → {{ b.arriveAirportCode }}</span>
+              </div>
+              <div class="stub-row">
+                <span class="label">SEAT:</span>
+                <strong class="stub-seat">{{ b.seatNumber }}</strong>
+              </div>
+              <div class="stub-row">
+                <span class="label">FARE:</span>
+                <span class="val">${{ b.price }}</span>
+              </div>
+            </div>
+
+            <!-- Actions: Print & Cancel Red Button -->
+            <div class="stub-actions">
+              <button *ngIf="b.status === 'CONFIRMED'" class="btn btn-outline btn-sm btn-block" (click)="printBoardingPass(b)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Print Pass
+              </button>
+              <button *ngIf="b.status === 'CONFIRMED'" class="btn btn-danger btn-sm btn-block" (click)="cancelBooking(b)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Cancel Reservation
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: FLEET & OPERATIONS CONSOLE -->
+    <section *ngIf="api.activeTab() === 'admin'" class="tab-content animate-fade-in">
+      
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Fleet & Operations Dashboard</h2>
+          <p class="section-sub">Real-time microservices topography and fleet telemetry</p>
+        </div>
+        <div class="header-actions-group">
+          <button class="btn btn-outline btn-sm" (click)="showAircraftModal.set(true)">+ Add Aircraft</button>
+          <button class="btn btn-primary btn-sm" (click)="showFlightModal.set(true)">+ Schedule Flight</button>
+        </div>
+      </div>
+
+      <!-- Microservices Health Matrix -->
+      <div class="health-matrix-grid">
+        
+        <div class="glass-card health-node" [class.live]="api.serviceHealth().gateway">
+          <div class="node-top">
+            <span class="node-port">Port 8081</span>
+            <span class="status-dot" [class.on]="api.serviceHealth().gateway"></span>
+          </div>
+          <h4 class="node-title">API Gateway</h4>
+          <p class="node-desc">Spring Cloud Gateway routing & token relay</p>
+          <span class="node-state">{{ api.serviceHealth().gateway ? 'Operational' : 'Simulated / Standby' }}</span>
+        </div>
+
+        <div class="glass-card health-node" [class.live]="api.serviceHealth().flight">
+          <div class="node-top">
+            <span class="node-port">Port 8082</span>
+            <span class="status-dot" [class.on]="api.serviceHealth().flight"></span>
+          </div>
+          <h4 class="node-title">Flight Service</h4>
+          <p class="node-desc">Flight schedules, airport routes & aircrafts</p>
+          <span class="node-state">{{ api.serviceHealth().flight ? 'Operational' : 'Simulated / Standby' }}</span>
+        </div>
+
+        <div class="glass-card health-node" [class.live]="api.serviceHealth().passenger">
+          <div class="node-top">
+            <span class="node-port">Port 8083</span>
+            <span class="status-dot" [class.on]="api.serviceHealth().passenger"></span>
+          </div>
+          <h4 class="node-title">Passenger Service</h4>
+          <p class="node-desc">Passenger records & travel identity management</p>
+          <span class="node-state">{{ api.serviceHealth().passenger ? 'Operational' : 'Simulated / Standby' }}</span>
+        </div>
+
+        <div class="glass-card health-node" [class.live]="api.serviceHealth().booking">
+          <div class="node-top">
+            <span class="node-port">Port 8084</span>
+            <span class="status-dot" [class.on]="api.serviceHealth().booking"></span>
+          </div>
+          <h4 class="node-title">Booking Service</h4>
+          <p class="node-desc">Reservation coordinator, seats & CQRS flow</p>
+          <span class="node-state">{{ api.serviceHealth().booking ? 'Operational' : 'Simulated / Standby' }}</span>
+        </div>
+
+        <div class="glass-card health-node" [class.live]="api.serviceHealth().keycloak">
+          <div class="node-top">
+            <span class="node-port">Port 8080</span>
+            <span class="status-dot" [class.on]="api.serviceHealth().keycloak"></span>
+          </div>
+          <h4 class="node-title">Keycloak IAM</h4>
+          <p class="node-desc">OAuth2 & OpenID Connect identity provider</p>
+          <span class="node-state">{{ api.serviceHealth().keycloak ? 'Operational' : 'Simulated / Standby' }}</span>
+        </div>
+
+        <div class="glass-card health-node" [class.live]="api.serviceHealth().rabbitmq">
+          <div class="node-top">
+            <span class="node-port">Port 5672</span>
+            <span class="status-dot" [class.on]="api.serviceHealth().rabbitmq"></span>
+          </div>
+          <h4 class="node-title">RabbitMQ</h4>
+          <p class="node-desc">Event messaging broker for microservices</p>
+          <span class="node-state">{{ api.serviceHealth().rabbitmq ? 'Operational' : 'Simulated / Standby' }}</span>
+        </div>
+
+      </div>
+
+      <!-- Aircraft Fleet Table -->
+      <div class="glass-card fleet-table-card">
+        <h3 class="fleet-title">Active Aircraft Fleet</h3>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Aircraft Name</th>
+                <th>Model</th>
+                <th>Year</th>
+                <th>Total Seats</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ac of api.aircrafts()">
+                <td><strong>{{ ac.name }}</strong></td>
+                <td><span class="badge badge-blue">{{ ac.model }}</span></td>
+                <td>{{ ac.manufacturingYear }}</td>
+                <td>{{ ac.totalSeats }} Seats</td>
+                <td><span class="badge badge-green">Active in Fleet</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal: Add Passenger -->
+  <div *ngIf="showPassengerModal()" class="modal-overlay animate-fade-in" (click)="showPassengerModal.set(false)">
+    <div class="glass-card modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Register New Passenger</h3>
+        <button class="close-btn" (click)="showPassengerModal.set(false)">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-input" placeholder="e.g. Captain Samantha Drake" [ngModel]="newPassName()" (ngModelChange)="newPassName.set($event)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input type="email" class="form-input" placeholder="samantha@aviation.org" [ngModel]="newPassEmail()" (ngModelChange)="newPassEmail.set($event)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Passport Number *</label>
+          <input type="text" class="form-input" placeholder="US12345678" [ngModel]="newPassPassport()" (ngModelChange)="newPassPassport.set($event)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="text" class="form-input" placeholder="+1 (555) 123-4567" [ngModel]="newPassPhone()" (ngModelChange)="newPassPhone.set($event)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Passenger Tier</label>
+          <select class="form-select" [ngModel]="newPassType()" (ngModelChange)="newPassType.set($event)">
+            <option value="ADULT">Adult</option>
+            <option value="VIP">VIP / First Class Frequent Flyer</option>
+            <option value="CHILD">Child</option>
+            <option value="INFANT">Infant</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showPassengerModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" (click)="registerPassenger()">Register Passenger</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Schedule Flight -->
+  <div *ngIf="showFlightModal()" class="modal-overlay animate-fade-in" (click)="showFlightModal.set(false)">
+    <div class="glass-card modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Schedule New Flight</h3>
+        <button class="close-btn" (click)="showFlightModal.set(false)">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Flight Number *</label>
+          <input type="text" class="form-input" placeholder="e.g. AE-990" [ngModel]="newFlightNumber()" (ngModelChange)="newFlightNumber.set($event)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Assigned Aircraft</label>
+          <select class="form-select" [ngModel]="newFlightAircraftId()" (ngModelChange)="newFlightAircraftId.set($event)">
+            <option *ngFor="let ac of api.aircrafts()" [value]="ac.id">{{ ac.name }} ({{ ac.model }})</option>
+          </select>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Origin Airport *</label>
+            <select class="form-select" [ngModel]="newFlightDepAirportId()" (ngModelChange)="newFlightDepAirportId.set($event)">
+              <option *ngFor="let a of api.airports()" [value]="a.id">{{ a.code }} - {{ a.city }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Destination Airport *</label>
+            <select class="form-select" [ngModel]="newFlightArrAirportId()" (ngModelChange)="newFlightArrAirportId.set($event)">
+              <option *ngFor="let a of api.airports()" [value]="a.id">{{ a.code }} - {{ a.city }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Departure Date & Time</label>
+            <input type="datetime-local" class="form-input" [ngModel]="newFlightDepDate()" (ngModelChange)="newFlightDepDate.set($event)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Arrival Date & Time</label>
+            <input type="datetime-local" class="form-input" [ngModel]="newFlightArrDate()" (ngModelChange)="newFlightArrDate.set($event)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Base Price ($)</label>
+          <input type="number" class="form-input" [ngModel]="newFlightPrice()" (ngModelChange)="newFlightPrice.set($event)">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showFlightModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" (click)="createFlight()">Schedule Flight</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Aircraft -->
+  <div *ngIf="showAircraftModal()" class="modal-overlay animate-fade-in" (click)="showAircraftModal.set(false)">
+    <div class="glass-card modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Register Aircraft to Fleet</h3>
+        <button class="close-btn" (click)="showAircraftModal.set(false)">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Aircraft Name *</label>
+          <input type="text" class="form-input" placeholder="e.g. Boeing 777X" [ngModel]="newAircraftName()" (ngModelChange)="newAircraftName.set($event)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Model Code *</label>
+          <input type="text" class="form-input" placeholder="e.g. B777-9" [ngModel]="newAircraftModel()" (ngModelChange)="newAircraftModel.set($event)">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Year of Manufacture</label>
+            <input type="number" class="form-input" [ngModel]="newAircraftYear()" (ngModelChange)="newAircraftYear.set($event)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Seat Capacity</label>
+            <input type="number" class="form-input" [ngModel]="newAircraftSeats()" (ngModelChange)="newAircraftSeats.set($event)">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" (click)="showAircraftModal.set(false)">Cancel</button>
+        <button class="btn btn-primary" (click)="createAircraft()">Register Aircraft</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Stack -->
+  <div class="toast-stack">
+    <div *ngFor="let t of toasts()" class="glass-card toast-card animate-fade-in" [class.toast-success]="t.type === 'success'" [class.toast-danger]="t.type === 'danger'" [class.toast-warning]="t.type === 'warning'" [class.toast-info]="t.type === 'info'">
+      <div class="toast-content">
+        <h4 class="toast-title">{{ t.title }}</h4>
+        <p class="toast-msg">{{ t.message }}</p>
+      </div>
+      <button class="toast-close" (click)="removeToast(t.id)">✕</button>
+    </div>
+  </div>
+
+</div>
