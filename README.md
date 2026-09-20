@@ -1,4 +1,4 @@
-# Aeros ✈️
+# Aeros - A Flight Booking Simulator Using Microsevices
 
 Aeros is a distributed flight booking system built with a modern microservices architecture using Java Spring Boot.
 
