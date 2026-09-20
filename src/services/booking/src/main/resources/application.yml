@@ -13,14 +13,14 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/booking_read
-      database: booking_read
+      uri: ${MONGODB_BOOKING_URI:mongodb://localhost:27017/booking_read}
+      database: ${MONGODB_BOOKING_DB:booking_read}
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_DEFAULT_USER:guest}
+    password: ${RABBITMQ_DEFAULT_PASS:guest}
     template:
       exchange: booking
       exchange-type: fanout

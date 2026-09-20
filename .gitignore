@@ -47,6 +47,9 @@ node_modules/
 .angular/
 **/.angular/
 dist/
-**/dist/
+# Environment files
+.env
+*.env.local
+!*.env.example
 
 
