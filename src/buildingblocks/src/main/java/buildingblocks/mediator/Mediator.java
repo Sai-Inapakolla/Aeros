@@ -305,7 +305,9 @@ class Mediator implements IMediator {
                 });
     }
 
-    private <TNotification extends INotification> @Nullable
+    @Nullable
+    @SuppressWarnings("unchecked")
+    private <TNotification extends INotification>
             INotificationHandler<TNotification> resolveNotificationHandler(
                     TNotification notification, ApplicationContext applicationContext) {
         return (INotificationHandler<TNotification>) notificationHandlerCache.computeIfAbsent(
